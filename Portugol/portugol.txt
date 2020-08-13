@@ -1,0 +1,270 @@
+programa
+{
+	funcao inicio()
+	{
+		escreva("ATENÇÃO! Somente para ordem 2 como exemplo")
+		escreva("\n\n")
+
+				inteiro i, j
+				real matriz2[2][2]
+				
+				para (i = 0; i < 2; i++)
+				{
+					para (j = 0; j < 2; j++)
+					{
+						escreva("\n\nDigite o elemento m", i + 1, j + 1, " da matriz M: ")
+						leia(matriz2[i][j]) 
+					}
+				}
+
+				real matrizinicial[2][2]
+				
+				para (i = 0; i < 2; i++)
+				{
+					para (j = 0; j < 2; j++)
+					{
+						matrizinicial[i][j] = matriz2[i][j]//esse "matrizinicial" serve para guardar os valores de entrada, pra utilizar nas operaçoes
+					}
+				}
+
+				escreva("\n\nMatriz M\n\n")
+				para (i = 0; i < 2; i++)//i < 2 na generalização para qualquer ordem seria algo como lenght ou size da matriz, que tem q retornar a ordem dela. Sera¡ facil pegar esse valor a partir da entrada do usuario no inicio
+				{
+					para (j = 0; j < 2; j++)
+					{
+						escreva("[", matriz2[i][j], "]")
+					}
+					escreva("\n")
+				}
+
+				escreva("\n\nAEG ou AGJ ida")
+				inteiro cont
+
+				para(cont = 0; cont < 1; cont++) //Como a ordem 2, cont > 1 quer dizer "vai ate a penultima linha, esse "1" Ã© o tamanho da matriz, deveter algum comando "lenght" ou "size" que gneraliza esse 1
+				{
+					real pivo = matriz2[cont][cont]
+					para (i = cont+1; i < 2; i++)//cont + 1 quer dizer "alguma linha abaixo do pivo que vou zerar o elemento da coluna do pivo"
+					{
+						escreva("\n\nL", i + 1, " = ", pivo,"L", i + 1, " - ", matriz2[i][cont],"L", cont + 1)
+						
+						real eliminando = matriz2[i][cont]//enquanto "pivo" Ã© a variavel q guarda o valor de referencia para zerar os outros abaixo dele (nesse caso da "ida"), "eliminando" Ã© exatamente o valor q vai zerar na multiplicações cruzada e posterior subtraçoes
+						
+						para (j = 0; j < 2; j++)
+						{
+							matriz2[i][j] = pivo*matriz2[i][j] - eliminando*matriz2[cont][j] //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivo´ * Li - elimiminando * Lj|||, onde j representa a linha do pivo´
+						}
+					}
+					escreva("\n\nMatriz M\n\n")
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 2; j++)
+						{
+							escreva("[", matriz2[i][j], "]")
+						}
+						escreva("\n")
+					}
+					
+				}
+
+				escreva("\n\nKernel - AGJ volta") //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não esta batendo. Passo pra vcs analisarem
+				
+				para(cont = 1; cont > 0; cont--)//cont = 1 vai virar cont = ordem da matriz de entrada
+				{
+					real pivo = matriz2[cont][cont]
+					para (i = cont-1; i >= 0; i--)//cont -1 quer dizer "alguma linha acima do pivo que vou zerar..."
+					{
+						escreva("\n\nL", i + 1, " = ", pivo,"L", i + 1, " - ", matriz2[i][cont],"L", cont + 1)
+						
+						real eliminando = matriz2[i][cont]//enquanto "pivo" Ã© a variavel q guarda o valor de referenncia para zeras os outros acima dele (nesse caso da "volta"), "eliminando" ao exatamente o valor q vai zerar na multiplicaões cruzada e posterior subtraçoes
+						
+						para (j = 0; j < 2; j++)
+						{
+							matriz2[i][j] = pivo*matriz2[i][j] - eliminando*matriz2[cont][j]//Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivo * Li - elimiminando * Lj|||, onde j representa a linha do pivo
+						}
+					}
+					escreva("\n\nMatriz M\n\n")
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 2; j++)
+						{
+							escreva("[", matriz2[i][j], "]")
+						}
+						escreva("\n")
+					}
+					
+				}
+
+				//Normalizando os vetores da matriz diagonal
+
+				para(i = 0; i < 2; i++)//i < 2 vai virar i < ordem da matriz
+				{	
+					real norm = matriz2[i][i]//pq os elementos a diagonal principal estão sempre na mesma ordem de linha do que de coluna! Elementos m11, m22, m33, etc.
+					para(j = 0; j  < 2; j++)// j < 2 vai virar...
+					{
+						se (norm != 0)
+						{
+							matriz2[i][j] = matriz2[i][j] / norm// "se(norm != 0)" evita divisoess por zero. Acredito que devem fazer o mesmo com "pivo" e "eliminando". Onde o candidato a pivo´ e zero, ou pulamos a etapa (com esse teste "se(variavel != 0)", ou trcamos as linhas de lugar, com o objetivo de o pivo  nao ser nulo, o que nao Ã© dificil fazer!	
+						}
+
+					}	
+				}
+
+				escreva("\n\nMatriz M normalizada = I\n\n")
+				para (i = 0; i < 2; i++)
+				{
+					para (j = 0; j < 2; j++)
+					{
+						escreva("[", matriz2[i][j], "]")
+					}
+					escreva("\n")
+				}
+
+				inteiro opt
+
+				escreva("\n\n Escolha qual operação fazer\n1) Resolver sistema linear\n2) Calcular o determinante\n3) obter a matriz inversa")
+				leia(opt)
+
+				se (opt == 1)
+				{
+					escreva("\n\nAqui consideramos que os coeficientes digitados por você são do sistema linear\n\n")
+					para (i = 0; i < 2; i++)
+					{
+						escreva("{", matrizinicial[i][0], "x + ", matrizinicial[i][1], "y = s", i + 1)
+						escreva("\n")
+					}
+					escreva("\n\nOnde s1, s2, ... são respostas de cada equação do sistema")
+
+					real resp[2] //vetor q vai receber s1, s2, ... digitado pelo usuario
+					
+					para (i = 0; i < 2; i++)
+					{
+						escreva("\n\nDigite s", i + 1, ": ")
+						leia(resp[i])	
+					}
+					
+					//Montando matriz completa: acrescentar uma coluna [s1, s2, ...] na matriz inicial
+					real matrizcompletasistlin[2][3]
+
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 3; j++)
+						{	
+							se (j < 2)
+							{
+								matrizcompletasistlin[i][j] = matrizinicial[i][j]
+							}
+							senao
+							{
+								matrizcompletasistlin[i][j] = resp[i]
+							}
+						}
+					}
+
+					escreva("\n\nMatriz completa = I\n\n")
+				
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 3; j++)
+						{
+							escreva("[", matrizcompletasistlin[i][j], "]")
+						}
+						escreva("\n")
+					}
+
+				escreva("\n\nAEG ou AGJ ida")
+				
+				para(cont = 0; cont < 1; cont++) //Como na ordem 2, cont > 1 quer dizer "vai ate a penultima linha, esse "1" e o tamanho da matriz, deveter algum comando "lenght" ou "size" que gneraliza esse 1
+				{
+					real pivo = matrizcompletasistlin[cont][cont]
+					para (i = cont+1; i < 2; i++)//cont + 1 quer dizer "alguma linha abaixo do pivo que vou zerar o elemento da coluna do pivo"
+					{
+						escreva("\n\nL", i + 1, " = ", pivo,"L", i + 1, " - ", matrizcompletasistlin[i][cont],"L", cont + 1)
+						
+						real eliminando = matrizcompletasistlin[i][cont]//enquanto "pivo" e a variael q guarda o valor de referencia para zerar os outros abaixo dele (nesse caso da "ida"), "eliminando" é exatamente o valor q vai zerar na multiplicaçoes cruzada e posterior subtraçoes
+						
+						para (j = 0; j < 3; j++)// j < ordem da matriz + 1 coluna
+						{
+							matrizcompletasistlin[i][j] = pivo*matrizcompletasistlin[i][j] - eliminando*matrizcompletasistlin[cont][j] //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivo´ * Li - elimiminando * Lj|||, onde j representa a linha do pivo
+						}
+					}
+				}
+
+				escreva("\n\nMatriz completa\n\n")
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 3; j++)
+						{
+							escreva("[", matrizcompletasistlin[i][j], "]")
+						}
+						escreva("\n")
+					}
+
+				escreva("\n\nKernel - AGJ volta") //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo nao esta batendo. Pesso pra vcs analisarem
+				
+				para(cont = 1; cont > 0; cont--)//cont = 1 vai virar cont = ordem da matriz de entrada
+				{
+					real pivo = matrizcompletasistlin[cont][cont]
+					para (i = cont-1; i >= 0; i--)//cont -1 quer dizer "alguma linha acima do pivo que vou zerar..."
+					{
+						escreva("\n\nL", i + 1, " = ", pivo,"L", i + 1, " - ", matrizcompletasistlin[i][cont],"L", cont + 1)
+						
+						real eliminando = matrizcompletasistlin[i][cont]//enquanto "pivo" é a variavel q guarda o valor de referencia para zeras os outros acima dele (nesse caso da "volta"), "eliminando" e exatamente o valor q vai zerar na multiplicaçao cruzada e posterior subtraçao
+						
+						para (j = 0; j < 3; j++)// j = ordem da mateiz + 1 coluna
+						{
+							matrizcompletasistlin[i][j] = pivo*matrizcompletasistlin[i][j] - eliminando*matrizcompletasistlin[cont][j]//Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivo * Li - elimiminando * Lj|||, onde j representa a linha do pivo
+						}
+					}
+					escreva("\n\nMatriz completa\n\n")
+					para (i = 0; i < 2; i++)
+					{
+						para (j = 0; j < 3; j++)
+						{
+							escreva("[", matrizcompletasistlin[i][j], "]")
+						}
+						escreva("\n")
+					}
+					
+				}
+
+				//Normalizando os vetores da matriz diagonal
+
+				para(i = 0; i < 2; i++)//i < 2 vai virar i < ordem da matriz
+				{	
+					real norm = matrizcompletasistlin[i][i]//pq os elementos a diagonal principal estaoo sempre na mesma ordem de linha do que de coluna! Elementos m11, m22, m33, etc.
+					para(j = 0; j  < 3; j++)// j < 3 vai virar j < qtde de colunas da matriz completa
+					{
+						se (norm != 0)
+						{
+							matrizcompletasistlin[i][j] = matrizcompletasistlin[i][j] / norm// "se(norm != 0)" evita divisoes por zero. Acredito que devem fazer o mesmo com "pivo" e "eliminando". Onde o candidato a pivo é zero, ou pulamos a etapa (com esse teste "se(variavel != 0)", ou trcamos as linhas de lugar, com o objetivo de o pivo nao ser nulo, o que nao e dificil fazer!	
+						}
+					}	
+				}
+
+				escreva("\n\nMatriz completa final\n\n")
+				para (i = 0; i < 2; i++)
+				{
+					para (j = 0; j < 3; j++)
+					{
+						escreva("[", matrizcompletasistlin[i][j], "]")
+					}
+					escreva("\n")
+				}
+
+				escreva("\n\nResposta: x = ", matrizcompletasistlin[0][2], ", y = ", matrizcompletasistlin[1][2], "\n")
+			}
+
+			senao se (opt == 2)
+			{
+				//codigo
+			}
+			senao se (opt == 3)
+			{
+				//ccodigo
+			}
+				senao
+				{
+					escreva("Somente operações 1, 2 ou 3")
+				}
+	}
+}

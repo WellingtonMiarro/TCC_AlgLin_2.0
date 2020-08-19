@@ -120,11 +120,9 @@ class Gauss {
     this.imprimaMatriz(matrizAux, "Resultado da volta"); //Imprima matriz
     return matriz;
   }
-
   //Fim eliminação gaussiana ---------------------------------------
 
   // Começo Gauss-Jordan-------------------
-
   jordan(matrizEntrada, ehInversa, noInversa) {
     console.log("INICIAR GAUSS-JORDAN");
     let matriz = matrizEntrada;
@@ -207,7 +205,7 @@ class Gauss {
     for (let i = 0; i < limite; i++) {
       for (let j = 0; j < colunas; j++) {
         if (ehUltimaNormaliza) {
-          //na ultima normaização não somplifica as frações
+          //na ultima normaização não simplifica as frações
           vetAux = this.divFracao(
             matriz[i][j],
             matriz[i + linhas][j],
@@ -270,7 +268,6 @@ class Gauss {
     console.log("----FIM----");
     return matrizInversa;
   }
-
   // Fim Gauss-Jordan-------------------
 
   // Começo Tratamento de ambas as eliminações
@@ -454,12 +451,12 @@ const elimina = new Gauss();
 console.log(elimina.jordan(matriz, true, false)); //Caso  queira com inversa(true, false), se não (false, true)
 
 let matrizG = [
-  [1, 1, 1, 1],
-  [4, 4, 2, 2],
-  [2, 1, -1, 0],
+  [2, 1, 3, 13],
+  [3, -1, 0, 1],
+  [1, 3, -4, -5],
 ];
 
-console.log(elimina.gaussiana(matrizG));
+//console.log(elimina.gaussiana(matrizG));
 
 /**
    * Entrada de Matriz Gaussiana: 

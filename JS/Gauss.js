@@ -48,11 +48,13 @@ class Gauss {
 
         for (j = 0; j < coluna; j++) {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
-          if (i == linha - 1) ver += matriz2[i][j];
+          if (i == linha - 1 && cont == linha - 2) ver += matriz2[i][j];
         }
       }
+
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
+      console.log("Esse é o ver: ", ver);
     }
 
     if (ver == 0)

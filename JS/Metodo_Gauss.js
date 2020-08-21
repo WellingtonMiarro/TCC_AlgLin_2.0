@@ -1,25 +1,37 @@
 class Gauss {
-  menu(matriz) {
+  menu() {
     let opt;
     opt = prompt(
-      "Escolha qual operação fazer\n1) Resolver sistema linear\n2) Calcular o determinante\n3) obter a matriz inversa\n"
+      "Escolha qual operação fazer\n1) Resolver sistema linear\n2) Calcular o determinante\n3) Obter a matriz inversa\n"
     );
     opt = parseInt(opt);
     switch (opt) {
       case 1:
-        this.sistemaLinear(matriz);
+        this.sistemaLinear(this.receberEntrada());
         break;
 
       case 2:
-        this.determinate(matriz);
+        this.determinate(this.receberEntrada());
         break;
 
       case 3:
-        this.inversa(matriz);
+        this.inversa(this.receberEntrada());
         break;
       default:
         console.error("COMANDO INVÁLIDO");
     }
+  }
+  receberEntrada() {
+    let mensagem;
+    let ordem = prompt("Informe a ordem da matriz");
+    let matriz = this.criarMatriz(ordem, ordem);
+    for (let i = 0; i < ordem; i++) {
+      for (let j = 0; j < ordem; j++) {
+        mensagem = "Digite m" + (i + 1) + (j + 1);
+        matriz[i][j] = parseFloat(prompt(mensagem));
+      }
+    }
+    return matriz;
   }
   ida(matriz) {
     let linha = matriz.length;
@@ -119,10 +131,9 @@ class Gauss {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
         }
       }
+      console.log("\n\nMatriz M\n\n");
+      console.table(matriz2);
     }
-
-    console.log("\n\nMatriz M\n\n");
-    console.table(matriz2);
 
     matriz2 = this.normaliza(matriz2);
 
@@ -156,7 +167,7 @@ class Gauss {
     let resp = []; //vetor q vai receber s1, s2, ... digitado pelo usuário
 
     for (i = 0; i < linha; i++) {
-      let mensagem = "Digite s" + i + 1 + ": ";
+      let mensagem = "Digite s" + (i + 1) + ": ";
       resp[i] = parseFloat(prompt(mensagem));
     }
 
@@ -182,13 +193,13 @@ class Gauss {
 
     console.table(matrizcompletasistlin);
 
-    console.log(
-      "\n\nResposta: x = ",
-      matrizcompletasistlin[0][2],
-      ", y = ",
-      matrizcompletasistlin[1][2],
-      "\n"
-    );
+    for (i = 0; i < linha; i++) {
+      console.log(
+        "\n\nResposta: x" + (i + 1),
+        " = ",
+        matrizcompletasistlin[i][matrizcompletasistlin[0].length - 1]
+      );
+    }
   }
 
   determinate(matrizinicial) {
@@ -231,10 +242,10 @@ class Gauss {
         j < coluna * 2;
         j++ //j = 4 vem de j = dobro de i, pois agregaremos uma matriz identidade á direita da matriz original, gerando uma matriz completa i x 2*i
       ) {
-        if (j < 2) matrizcompletainv[i][j] = matrizinicial[i][j];
+        if (j < coluna) matrizcompletainv[i][j] = matrizinicial[i][j];
         else {
           //o condicional abaixo é ref a uma matriz identidade
-          if (i == j - 2) matrizcompletainv[i][j] = 1.0;
+          if (i == j - coluna) matrizcompletainv[i][j] = 1.0;
           //j - 2 quer dizer j - ordem da matriz de entrada
           else matrizcompletainv[i][j] = 0.0;
         }
@@ -293,12 +304,4 @@ class Gauss {
 }
 
 const Elimina = new Gauss();
-
-let matriz = [
-  //Aqui vc passa a matriz
-  [1, 3, 3],
-  [2, 6, 2],
-  [2, 6, 9],
-];
-
-Elimina.menu(matriz);
+Elimina.menu();

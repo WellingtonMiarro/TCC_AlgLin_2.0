@@ -11,7 +11,7 @@ class Gauss {
         break;
 
       case 2:
-        this.determinate(this.receberEntrada());
+        this.determinante(this.receberEntrada());
         break;
 
       case 3:
@@ -27,13 +27,13 @@ class Gauss {
     let matriz = this.criarMatriz(ordem, ordem);
     for (let i = 0; i < ordem; i++) {
       for (let j = 0; j < ordem; j++) {
-        mensagem = "Digite m" + (i + 1) + (j + 1);
+        mensagem = "Digite M" + "(" + (i + 1) + "," + (j + 1) + ")";
         matriz[i][j] = parseFloat(prompt(mensagem));
       }
     }
     return matriz;
   }
-  ida(matriz) {
+  ida(matriz, codigoErro) {
     let linha = matriz.length;
     let coluna = matriz[0].length;
     let i, j;
@@ -59,6 +59,7 @@ class Gauss {
       cont++ //Como é ordem 2, cont > 1 quer dizer "vai até a penúltima linha, esse "1" é o tamanho da matriz, deveter algum comando "lenght" ou "size" que gneraliza esse 1
     ) {
       let pivo = matriz2[cont][cont];
+
       for (
         i = cont + 1;
         i < linha;
@@ -81,24 +82,37 @@ class Gauss {
 
         for (j = 0; j < coluna; j++) {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
-          if (i == linha - 1 && cont == linha - 2) ver += matriz2[i][j];
+          if (matriz2[i][j] == -0) matriz2[i][j] = 0;
+          if (codigoErro == 1 && j < coluna - 1) ver += matriz2[i][j];
+          else if (codigoErro != 1) ver += matriz2[i][j];
         }
       }
+      if (ver == 0 || pivo == 0) {
+        console.table(matriz2);
+        switch (codigoErro) {
+          case 1:
+            return console.error("O sistema não é determinado!");
+          case 2:
+            return console.error("O determinante é nulo!");
+          case 3:
+            return console.error("Essa matriz não admite inversa!");
+        }
+      }
+      ver = 0;
 
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
     }
-
-    if (ver == 0 || matriz2[cont][cont] == 0)
-      return console.error("LINHA ZARADA, NÃO É POSSÍVEL CONTINUAR!");
     return matriz2;
   }
 
-  volta(matriz2) {
+  volta(matriz2, codigoErro) {
     let linha = matriz2.length;
     let coluna = matriz2[0].length;
-    let i, j, cont;
-    let matrizTeste = this.criarMatriz(linha, coluna);
+    let i,
+      j,
+      cont,
+      ver = 0;
     console.log("\n\nKernel - AGJ volta"); //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não está batendo. Peço pra vcs analisarem
 
     for (
@@ -129,14 +143,27 @@ class Gauss {
 
         for (j = 0; j < coluna; j++) {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
+          if (matriz2[i][j] == -0) matriz2[i][j] = 0;
+          if (codigoErro == 1 && j < coluna - 1) ver += matriz2[i][j];
+          else if (codigoErro != 1) ver += matriz2[i][j];
         }
+        if (ver == 0 || pivo == 0) {
+          console.table(matriz2);
+          switch (codigoErro) {
+            case 1:
+              return console.error("O sistema não é determinado!");
+            case 2:
+              return console.error("O determinante é nulo!");
+            case 3:
+              return console.error("Essa matriz não admite inversa!");
+          }
+        }
+        ver = 0;
       }
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
     }
-
     matriz2 = this.normaliza(matriz2);
-
     console.log("\n\nMatriz M normalizada = I\n\n");
     console.table(matriz2);
     return matriz2;
@@ -145,21 +172,24 @@ class Gauss {
   sistemaLinear(matrizinicial) {
     let linha = matrizinicial.length;
     let coluna = matrizinicial[0].length;
-    let i, j;
+    let i,
+      j,
+      equacao = "{";
+
     console.log(
       "\n\nAqui consideramos que os coeficientes digitados por você são do sistema linear\n\n"
     );
     for (i = 0; i < linha; i++) {
-      console.log(
-        "{",
-        matrizinicial[i][0],
-        "x + ",
-        matrizinicial[i][1],
-        "y = s",
-        i + 1
-      );
-      console.log("\n");
+      for (j = 0; j < coluna; j++) {
+        if (j != coluna - 1)
+          equacao += matrizinicial[i][j] + "y" + (j + 1) + " + ";
+        else equacao += matrizinicial[i][j] + "y" + (j + 1) + " ";
+      }
+      equacao += "= s" + (i + 1);
+      console.log(equacao);
+      equacao = "{";
     }
+
     console.log(
       "\n\nOnde s1, s2, ... são respostas de cada equação do sistema"
     );
@@ -187,7 +217,7 @@ class Gauss {
 
     console.log(matrizcompletasistlin);
 
-    matrizcompletasistlin = this.volta(this.ida(matrizcompletasistlin));
+    matrizcompletasistlin = this.volta(this.ida(matrizcompletasistlin, 1), 1);
 
     console.log("\n\nMatriz completa final\n\n");
 
@@ -202,7 +232,7 @@ class Gauss {
     }
   }
 
-  determinate(matrizinicial) {
+  determinante(matrizinicial) {
     let linha = matrizinicial.length;
     let coluna = matrizinicial[0].length;
     console.log(
@@ -217,7 +247,7 @@ class Gauss {
     console.log("\n\nCalculando o determinante por triangulação: M = \n\n");
     console.table(matrizinicial);
     //Montando matriz det
-    let matrizdet = this.ida(matrizinicial);
+    let matrizdet = this.ida(matrizinicial, 2);
     console.log("\n\nDeterminante = ", matrizdet[linha - 1][coluna - 1], "\n"); //[1][1] vai virar [ordem][ordem]
   }
 
@@ -255,7 +285,7 @@ class Gauss {
 
     console.table(matrizcompletainv);
 
-    matrizcompletainv = this.volta(this.ida(matrizcompletainv));
+    matrizcompletainv = this.volta(this.ida(matrizcompletainv, 3), 3);
 
     //Normalizando os vetores da matriz diagonal
 

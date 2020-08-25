@@ -2,7 +2,7 @@ class Gauss {
   menu() {
     let opt;
     opt = prompt(
-      "Escolha qual operação fazer\n1) Resolver sistema linear\n2) Calcular o determinante\n3) Obter a matriz inversa\n"
+      "Escolha qual operação fazer:\n1) Resolver sistema linear\n2) Calcular o determinante\n3) Obter a matriz inversa\n"
     );
     opt = parseInt(opt);
     switch (opt) {
@@ -52,7 +52,7 @@ class Gauss {
     console.log("\n\nMatriz M\n\n");
     console.table(matriz2);
 
-    console.log("\n\nAEG ou AGJ ida");
+    console.log("\n\n IDA - AEG");
     let cont,
       ver = -1;
 
@@ -89,20 +89,22 @@ class Gauss {
         let eliminando = matriz2[i][cont]; //enquanto "pivo" é a variável q guarda o valor de referência para zerar os outros abaixo dele (nesse caso da "ida"), "eliminando" é exatamente o valor q vai zerar na multiplicação cruzada e posterior subtração
 
         for (j = 0; j < coluna; j++) {
-          if (codigoErro != 2)
-            matriz2[i][j] =
-              pivo * matriz2[i][j] - eliminando * matriz2[cont][j];
-          //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
-          else
-            matriz2[i][j] =
-              matriz2[i][j] - (eliminando / pivo) * matriz2[cont][j]; //Caso o codigo for igual a 2, que identifica nesse caso o calculo determinante, o metodo de elimanção sofre essa alteração, caso não, ele vai usar o método da condição acima
-          if (matriz2[i][j] == -0) matriz2[i][j] = 0; //Em alguns casos o número "0" acaba ficando negativo, como isso não faz sentido, essa condição trata isso.
-          if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
-          //Aqui esta sendo feito um somatorio da linha da matriz quando é chamado o método de sistema linear, tem que ser feito dessa forma por ter uma coluna "extra" na matriz
-          else if (codigoErro != 1 && matriz2[i][j] == 0) ver++; //Aqui ele faz o somatorio até a utilma coluna.
+          if (matriz2[i][j] != 0) {
+            if (codigoErro != 2)
+              matriz2[i][j] =
+                pivo * matriz2[i][j] - eliminando * matriz2[cont][j];
+            //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
+            else
+              matriz2[i][j] =
+                matriz2[i][j] - (eliminando / pivo) * matriz2[cont][j]; //Caso o codigo for igual a 2, que identifica nesse caso o calculo determinante, o metodo de elimanção sofre essa alteração, caso não, ele vai usar o método da condição acima
+            if (matriz2[i][j] == -0) matriz2[i][j] = 0; //Em alguns casos o número "0" acaba ficando negativo, como isso não faz sentido, essa condição trata isso.
+            if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
+            //Aqui esta sendo feito um somatorio da linha da matriz quando é chamado o método de sistema linear, tem que ser feito dessa forma por ter uma coluna "extra" na matriz
+            else if (codigoErro != 1 && matriz2[i][j] == 0) ver++; //Aqui ele faz o somatorio até a utilma coluna.
+          }
         }
         if (ver == coluna - 1 || pivo == 0) {
-          console.table(matriz2);
+          this.imprima(matriz2);
 
           switch (codigoErro) {
             case 1:
@@ -117,7 +119,7 @@ class Gauss {
       }
 
       console.log("\n\nMatriz M\n\n");
-      console.table(matriz2);
+      this.imprima(matriz2);
     }
     if (codigoErro == 2) {
       // Aqui retorna a matriz e contador de troca de linhas para determinante
@@ -134,7 +136,7 @@ class Gauss {
       j,
       cont,
       ver = -1;
-    console.log("\n\nKernel - AGJ volta"); //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não está batendo. Peço pra vcs analisarem
+    console.log("\n\n VOLTA - AGJ "); //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não está batendo. Peço pra vcs analisarem
 
     for (
       cont = linha - 1;
@@ -164,10 +166,13 @@ class Gauss {
         let eliminando = matriz2[i][cont]; //enquanto "pivo" é a variável q guarda o valor de referência para zeras os outros acima dele (nesse caso da "volta"), "eliminando" é exatamente o valor q vai zerar na multiplicação cruzada e posterior subtração
 
         for (j = 0; j < coluna; j++) {
-          matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
-          if (matriz2[i][j] == -0) matriz2[i][j] = 0;
-          if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
-          else if (codigoErro != 1 && matriz2[i][j] == 0) ver++;
+          if (matriz2[i][j] != 0) {
+            matriz2[i][j] =
+              pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
+            if (matriz2[i][j] == -0) matriz2[i][j] = 0;
+            if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
+            else if (codigoErro != 1 && matriz2[i][j] == 0) ver++;
+          }
         }
         if (ver == coluna - 1 || pivo == 0) {
           console.table(matriz2);
@@ -183,11 +188,11 @@ class Gauss {
         ver = -1;
       }
       console.log("\n\nMatriz M\n\n");
-      console.table(matriz2);
+      this.imprima(matriz2);
     }
     matriz2 = this.normaliza(matriz2);
     console.log("\n\nMatriz M normalizada = I\n\n");
-    console.table(matriz2);
+    this.imprima(matriz2);
     return matriz2;
   }
   trocaLinhas(matriz, posPivo) {
@@ -210,9 +215,11 @@ class Gauss {
       matriz[linhaOk][j] = matriz[posPivo][j];
       matriz[posPivo][j] = aux;
     }
-    console.log("PIVO IGUAL A ZERO");
-    console.log("LINHA " + posPivo + " TROCOU COM  A LINHA " + linhaOk);
-    console.table(matriz);
+    console.log("PIVÔ IGUAL A ZERO");
+    console.log(
+      "LINHA " + (posPivo + j) + " TROCOU COM  A LINHA " + (linhaOk + j)
+    );
+    this.imprima(matriz);
     return matriz;
   }
   sistemaLinear(matrizinicial) {
@@ -267,7 +274,7 @@ class Gauss {
 
     console.log("\n\nMatriz completa final\n\n");
 
-    console.table(matrizcompletasistlin);
+    this.imprima(matrizcompletasistlin);
 
     for (i = 0; i < linha; i++) {
       console.log(
@@ -304,6 +311,7 @@ class Gauss {
       //invertendo o sinal de acordo com a quantidade de vezes que trocou de linhas
       if (recebeObjeto[1] / 2 != 0) somatorio *= -1;
     }
+    somatorio = somatorio.toFixed(1);
     console.log("\n\nDeterminante = ", somatorio, "\n"); //[1][1] vai virar [ordem][ordem]
   }
 
@@ -386,6 +394,19 @@ class Gauss {
       matriz[i] = Array(coluna);
     }
     return matriz;
+  }
+  imprima(matriz) {
+    //imprimi as matrizes arredondadas
+    let linha = matriz.length;
+    let coluna = matriz[0].length;
+    let novaMatriz = this.criarMatriz(linha, coluna);
+    for (let i = 0; i < linha; i++) {
+      for (let j = 0; j < coluna; j++) {
+        novaMatriz[i][j] = matriz[i][j].toFixed(1);
+      }
+    }
+
+    console.table(novaMatriz);
   }
 }
 

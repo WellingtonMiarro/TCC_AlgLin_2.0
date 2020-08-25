@@ -1,4 +1,4 @@
-class Metodo_Gauss {
+class Gauss {
   menu() {
     let opt;
     opt = prompt(
@@ -36,7 +36,10 @@ class Metodo_Gauss {
   ida(matriz, codigoErro) {
     let linha = matriz.length;
     let coluna = matriz[0].length;
-    let i, j;
+    let i,
+      j,
+      contTrocaLinhas = 0;
+    let doisObjetos; //Exclusivo da determinante
     let matriz2 = matriz;
     let matrizinicial = this.criarMatriz(linha, coluna);
 
@@ -51,8 +54,7 @@ class Metodo_Gauss {
 
     console.log("\n\nAEG ou AGJ ida");
     let cont,
-      ver = -1,
-      verDaLinear = -1;
+      ver = -1;
 
     for (
       cont = 0;
@@ -63,6 +65,7 @@ class Metodo_Gauss {
       if (pivo == 0) {
         matriz2 = this.trocaLinhas(matriz2, cont); //Caso o pivo for igual a zero é chamado o metodo para trocar linhas.
         pivo = matriz2[cont][cont];
+        contTrocaLinhas++;
       }
 
       for (
@@ -94,15 +97,13 @@ class Metodo_Gauss {
             matriz2[i][j] =
               matriz2[i][j] - (eliminando / pivo) * matriz2[cont][j]; //Caso o codigo for igual a 2, que identifica nesse caso o calculo determinante, o metodo de elimanção sofre essa alteração, caso não, ele vai usar o método da condição acima
           if (matriz2[i][j] == -0) matriz2[i][j] = 0; //Em alguns casos o número "0" acaba ficando negativo, como isso não faz sentido, essa condição trata isso.
-          if (codigoErro == 1 && j < coluna - 1) verDaLinear++;
+          if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
           //Aqui esta sendo feito um somatorio da linha da matriz quando é chamado o método de sistema linear, tem que ser feito dessa forma por ter uma coluna "extra" na matriz
           else if (codigoErro != 1 && matriz2[i][j] == 0) ver++; //Aqui ele faz o somatorio até a utilma coluna.
         }
-        if (ver == coluna - 1 || pivo == 0 || verDaLinear == coluna - 2) {
+        if (ver == coluna - 1 || pivo == 0) {
           console.table(matriz2);
-          console.log("pivo = " + pivo);
-          console.log("ver = " + ver);
-          console.log("verDaLinear = " + verDaLinear);
+
           switch (codigoErro) {
             case 1:
               return console.error("O sistema não é determinado!");
@@ -113,11 +114,15 @@ class Metodo_Gauss {
           }
         }
         ver = -1;
-        verDaLinear = -1;
       }
 
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
+    }
+    if (codigoErro == 2) {
+      // Aqui retorna a matriz e contador de troca de linhas para determinante
+      doisObjetos = [matriz2, contTrocaLinhas];
+      return doisObjetos;
     }
     return matriz2;
   }
@@ -128,8 +133,7 @@ class Metodo_Gauss {
     let i,
       j,
       cont,
-      ver = -1,
-      verDaLinear = -1;
+      ver = -1;
     console.log("\n\nKernel - AGJ volta"); //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não está batendo. Peço pra vcs analisarem
 
     for (
@@ -162,10 +166,10 @@ class Metodo_Gauss {
         for (j = 0; j < coluna; j++) {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
           if (matriz2[i][j] == -0) matriz2[i][j] = 0;
-          if (codigoErro == 1 && j < coluna - 1) verDaLinear++;
+          if (codigoErro == 1 && j < coluna - 1 && matriz2[i][j] == 0) ver++;
           else if (codigoErro != 1 && matriz2[i][j] == 0) ver++;
         }
-        if (ver == coluna - 1 || pivo == 0 || verDaLinear == coluna - 2) {
+        if (ver == coluna - 1 || pivo == 0) {
           console.table(matriz2);
           switch (codigoErro) {
             case 1:
@@ -177,7 +181,6 @@ class Metodo_Gauss {
           }
         }
         ver = -1;
-        verDaLinear = -1;
       }
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
@@ -187,7 +190,7 @@ class Metodo_Gauss {
     console.table(matriz2);
     return matriz2;
   }
-  trocaLinhas(matriz, posPivo, idaOuVolta) {
+  trocaLinhas(matriz, posPivo) {
     // Esse metodo troca a atual linha do pivo pela de baixo, caso a
     let linha = matriz.length;
     let coluna = matriz[0].length;
@@ -277,6 +280,7 @@ class Metodo_Gauss {
 
   determinante(matrizinicial) {
     let linha = matrizinicial.length;
+    let recebeObjeto;
     console.log(
       "\n\nBasta escalonar a matriz quadrada (AEG), até virar uma matriz triangular inferior"
     );
@@ -289,11 +293,16 @@ class Metodo_Gauss {
     console.log("\n\nCalculando o determinante por triangulação: M = \n\n");
     console.table(matrizinicial);
     //Montando matriz det
-    let matrizdet = this.ida(matrizinicial, 2);
+    recebeObjeto = this.ida(matrizinicial, 2);
+    let matrizdet = recebeObjeto[0];
     let somatorio = 1;
     for (let i = 0; i < linha; i++) {
       //Somatorio da diagonal principal.
       somatorio *= matrizdet[i][i];
+    }
+    if (recebeObjeto[1] != 0) {
+      //invertendo o sinal de acordo com a quantidade de vezes que trocou de linhas
+      if (recebeObjeto[1] / 2 != 0) somatorio *= -1;
     }
     console.log("\n\nDeterminante = ", somatorio, "\n"); //[1][1] vai virar [ordem][ordem]
   }
@@ -380,5 +389,5 @@ class Metodo_Gauss {
   }
 }
 
-const Elimina = new Metodos_Gauss();
+const Elimina = new Gauss();
 Elimina.menu();

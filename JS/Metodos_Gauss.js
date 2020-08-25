@@ -1,4 +1,4 @@
-class Gauss {
+class Metodos_Gauss {
   //Começo eliminação gaussiana----------------------------------
   gaussiana(matrizEntrada) {
     console.log("INICIAR ELIMINAÇÃO GAUSSIANA");
@@ -446,7 +446,7 @@ let matriz = [
   [0, 1, 2],
 ];
 
-const elimina = new Gauss();
+const elimina = new Metodos_Gauss();
 
 console.log(elimina.jordan(matriz, true, false)); //Caso  queira com inversa(true, false), se não (false, true)
 

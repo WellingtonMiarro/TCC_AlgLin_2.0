@@ -1,4 +1,4 @@
-class Gauss {
+class Metodo_Gauss {
   menu() {
     let opt;
     opt = prompt(
@@ -51,7 +51,8 @@ class Gauss {
 
     console.log("\n\nAEG ou AGJ ida");
     let cont,
-      ver = 0;
+      ver = -1,
+      verDaLinear = -1;
 
     for (
       cont = 0;
@@ -59,6 +60,10 @@ class Gauss {
       cont++ //Como é ordem 2, cont > 1 quer dizer "vai até a penúltima linha, esse "1" é o tamanho da matriz, deveter algum comando "lenght" ou "size" que gneraliza esse 1
     ) {
       let pivo = matriz2[cont][cont];
+      if (pivo == 0) {
+        matriz2 = this.trocaLinhas(matriz2, cont); //Caso o pivo for igual a zero é chamado o metodo para trocar linhas.
+        pivo = matriz2[cont][cont];
+      }
 
       for (
         i = cont + 1;
@@ -81,24 +86,35 @@ class Gauss {
         let eliminando = matriz2[i][cont]; //enquanto "pivo" é a variável q guarda o valor de referência para zerar os outros abaixo dele (nesse caso da "ida"), "eliminando" é exatamente o valor q vai zerar na multiplicação cruzada e posterior subtração
 
         for (j = 0; j < coluna; j++) {
-          matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
-          if (matriz2[i][j] == -0) matriz2[i][j] = 0;
-          if (codigoErro == 1 && j < coluna - 1) ver += matriz2[i][j];
-          else if (codigoErro != 1) ver += matriz2[i][j];
+          if (codigoErro != 2)
+            matriz2[i][j] =
+              pivo * matriz2[i][j] - eliminando * matriz2[cont][j];
+          //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
+          else
+            matriz2[i][j] =
+              matriz2[i][j] - (eliminando / pivo) * matriz2[cont][j]; //Caso o codigo for igual a 2, que identifica nesse caso o calculo determinante, o metodo de elimanção sofre essa alteração, caso não, ele vai usar o método da condição acima
+          if (matriz2[i][j] == -0) matriz2[i][j] = 0; //Em alguns casos o número "0" acaba ficando negativo, como isso não faz sentido, essa condição trata isso.
+          if (codigoErro == 1 && j < coluna - 1) verDaLinear++;
+          //Aqui esta sendo feito um somatorio da linha da matriz quando é chamado o método de sistema linear, tem que ser feito dessa forma por ter uma coluna "extra" na matriz
+          else if (codigoErro != 1 && matriz2[i][j] == 0) ver++; //Aqui ele faz o somatorio até a utilma coluna.
         }
-      }
-      if (ver == 0 || pivo == 0) {
-        console.table(matriz2);
-        switch (codigoErro) {
-          case 1:
-            return console.error("O sistema não é determinado!");
-          case 2:
-            return console.error("O determinante é nulo!");
-          case 3:
-            return console.error("Essa matriz não admite inversa!");
+        if (ver == coluna - 1 || pivo == 0 || verDaLinear == coluna - 2) {
+          console.table(matriz2);
+          console.log("pivo = " + pivo);
+          console.log("ver = " + ver);
+          console.log("verDaLinear = " + verDaLinear);
+          switch (codigoErro) {
+            case 1:
+              return console.error("O sistema não é determinado!");
+            case 2:
+              return console.error("O determinante é nulo!");
+            case 3:
+              return console.error("Essa matriz não admite inversa!");
+          }
         }
+        ver = -1;
+        verDaLinear = -1;
       }
-      ver = 0;
 
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
@@ -112,7 +128,8 @@ class Gauss {
     let i,
       j,
       cont,
-      ver = 0;
+      ver = -1,
+      verDaLinear = -1;
     console.log("\n\nKernel - AGJ volta"); //Confesso q estou confuso na "volta". Pra ordem 2 funcionou, mas pra ordem 3 algo não está batendo. Peço pra vcs analisarem
 
     for (
@@ -121,6 +138,7 @@ class Gauss {
       cont-- //cont = 1 vai virar cont = ordem da matriz de entrada
     ) {
       let pivo = matriz2[cont][cont];
+      if (pivo == 0) matriz2 = this.trocaLinhas(matriz2, cont); //Caso o pivo for igual a zero é chamado o metodo para trocar linhas.
       for (
         i = cont - 1;
         i >= 0;
@@ -144,10 +162,10 @@ class Gauss {
         for (j = 0; j < coluna; j++) {
           matriz2[i][j] = pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
           if (matriz2[i][j] == -0) matriz2[i][j] = 0;
-          if (codigoErro == 1 && j < coluna - 1) ver += matriz2[i][j];
-          else if (codigoErro != 1) ver += matriz2[i][j];
+          if (codigoErro == 1 && j < coluna - 1) verDaLinear++;
+          else if (codigoErro != 1 && matriz2[i][j] == 0) ver++;
         }
-        if (ver == 0 || pivo == 0) {
+        if (ver == coluna - 1 || pivo == 0 || verDaLinear == coluna - 2) {
           console.table(matriz2);
           switch (codigoErro) {
             case 1:
@@ -158,7 +176,8 @@ class Gauss {
               return console.error("Essa matriz não admite inversa!");
           }
         }
-        ver = 0;
+        ver = -1;
+        verDaLinear = -1;
       }
       console.log("\n\nMatriz M\n\n");
       console.table(matriz2);
@@ -168,7 +187,31 @@ class Gauss {
     console.table(matriz2);
     return matriz2;
   }
+  trocaLinhas(matriz, posPivo, idaOuVolta) {
+    // Esse metodo troca a atual linha do pivo pela de baixo, caso a
+    let linha = matriz.length;
+    let coluna = matriz[0].length;
+    let aux,
+      linhaOk = -1;
 
+    // if(idaOuVolta == 1)inicio = 0;// Se for na ida vai trocar de cima para baixo
+    //else inicio = coluna - 1;// Se for na volta vai trocar de baixo para cima
+
+    for (let i = posPivo + 1; i < linha; i++) {
+      if (matriz[i][posPivo] != 0) linhaOk = i;
+    }
+    if (linhaOk == -1) return matriz; // Caso não seja possivel trocar linhas
+
+    for (let j = 0; j < coluna; j++) {
+      aux = matriz[linhaOk][j];
+      matriz[linhaOk][j] = matriz[posPivo][j];
+      matriz[posPivo][j] = aux;
+    }
+    console.log("PIVO IGUAL A ZERO");
+    console.log("LINHA " + posPivo + " TROCOU COM  A LINHA " + linhaOk);
+    console.table(matriz);
+    return matriz;
+  }
   sistemaLinear(matrizinicial) {
     let linha = matrizinicial.length;
     let coluna = matrizinicial[0].length;
@@ -234,7 +277,6 @@ class Gauss {
 
   determinante(matrizinicial) {
     let linha = matrizinicial.length;
-    let coluna = matrizinicial[0].length;
     console.log(
       "\n\nBasta escalonar a matriz quadrada (AEG), até virar uma matriz triangular inferior"
     );
@@ -248,7 +290,12 @@ class Gauss {
     console.table(matrizinicial);
     //Montando matriz det
     let matrizdet = this.ida(matrizinicial, 2);
-    console.log("\n\nDeterminante = ", matrizdet[linha - 1][coluna - 1], "\n"); //[1][1] vai virar [ordem][ordem]
+    let somatorio = 1;
+    for (let i = 0; i < linha; i++) {
+      //Somatorio da diagonal principal.
+      somatorio *= matrizdet[i][i];
+    }
+    console.log("\n\nDeterminante = ", somatorio, "\n"); //[1][1] vai virar [ordem][ordem]
   }
 
   inversa(matrizinicial) {
@@ -333,5 +380,5 @@ class Gauss {
   }
 }
 
-const Elimina = new Gauss();
+const Elimina = new Metodos_Gauss();
 Elimina.menu();

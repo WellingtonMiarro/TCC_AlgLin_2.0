@@ -217,7 +217,7 @@ class Gauss {
     }
     console.log("PIVÔ IGUAL A ZERO");
     console.log(
-      "LINHA " + (posPivo + j) + " TROCOU COM  A LINHA " + (linhaOk + j)
+      "LINHA " + (posPivo + 1) + " TROCOU COM  A LINHA " + (linhaOk + 1)
     );
     this.imprima(matriz);
     return matriz;

@@ -69,21 +69,20 @@ class Gauss {
       for (i = cont + 1; i < linha; i++) {
         //cont + 1 quer dizer "alguma linha abaixo do pivô que vou zerar o elemento da coluna do pivô"
 
-        console.log(
-          "\n\nL",
-          i + 1,
-          " = ",
-          pivo,
-          "L",
-          i + 1,
-          " - ",
-          matriz2[i][cont],
-          "L",
-          cont + 1
-        );
-
         let eliminando = matriz2[i][cont]; //enquanto "pivo" é a variável q guarda o valor de referência para zerar os outros abaixo dele (nesse caso da "ida"), "eliminando" é exatamente o valor q vai zerar na multiplicação cruzada e posterior subtração
         if (eliminando != 0) {
+          console.log(
+            "\n\nL",
+            i + 1,
+            " = ",
+            pivo,
+            "L",
+            i + 1,
+            " - ",
+            matriz2[i][cont],
+            "L",
+            cont + 1
+          );
           for (j = 0; j < coluna; j++) {
             if (codigoErro != 2)
               matriz2[i][j] =
@@ -137,23 +136,24 @@ class Gauss {
 
       let pivo = matriz2[cont][cont];
       if (pivo == 0) matriz2 = this.trocaLinhas(matriz2, cont); //Caso o pivo for igual a zero é chamado o metodo para trocar linhas.
+
       for (i = cont - 1; i >= 0; i--) {
         //cont -1 quer dizer "alguma linha acima do pivô que vou zerar...")
-        console.log(
-          "\n\nL",
-          i + 1,
-          " = ",
-          pivo,
-          "L",
-          i + 1,
-          " - ",
-          matriz2[i][cont],
-          "L",
-          cont + 1
-        );
 
         let eliminando = matriz2[i][cont]; //enquanto "pivo" é a variável q guarda o valor de referência para zeras os outros acima dele (nesse caso da "volta"), "eliminando" é exatamente o valor q vai zerar na multiplicação cruzada e posterior subtração
         if (eliminando != 0) {
+          console.log(
+            "\n\nL",
+            i + 1,
+            " = ",
+            pivo,
+            "L",
+            i + 1,
+            " - ",
+            matriz2[i][cont],
+            "L",
+            cont + 1
+          );
           for (j = 0; j < coluna; j++) {
             matriz2[i][j] =
               pivo * matriz2[i][j] - eliminando * matriz2[cont][j]; //Do artigo SIMPOCOMP e da teoria q vcs estudaram comigo e com Vini: |||Li <- pivô * Li - elimiminando * Lj|||, onde j representa a linha do pivô
@@ -187,7 +187,6 @@ class Gauss {
   }
 
   trocaLinhas(matriz, posPivo) {
-    console.log("entrei aqui");
     // Esse metodo troca a atual linha do pivo pela de baixo, caso a
     let linha = matriz.length;
     let coluna = matriz[0].length;
@@ -347,7 +346,7 @@ class Gauss {
 
     console.log("\n\nMatriz completa final\n\n");
 
-    console.table(matrizcompletainv);
+    this.imprima(matrizcompletainv);
 
     console.log("\n\nA inversa de M é: \n\n");
 
@@ -359,7 +358,7 @@ class Gauss {
         matrizImprima[i][j] = matrizcompletainv[i][j + coluna];
       }
     }
-    console.table(matrizImprima);
+    this.imprima(matrizImprima);
   }
 
   normaliza(matriz) {

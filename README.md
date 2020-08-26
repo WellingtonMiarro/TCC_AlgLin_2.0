@@ -1,3 +1,3 @@
-# TCC-Alglin 2.0
+# TCC-Alglin 2.0 ⏳
 
-🔨 🛠️Biblioteca de Àlgebra Linear Em construção 🔨 🛠️
+🔨 🛠️Biblioteca JS de Àlgebra Linear em construção 🔨 🛠️

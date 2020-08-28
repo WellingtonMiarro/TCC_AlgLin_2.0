@@ -121,7 +121,6 @@ class Gauss {
     }
     return matriz2;
   }
-
   volta(matriz2, codigoErro) {
     let linha = matriz2.length;
     let coluna = matriz2[0].length;
@@ -163,6 +162,7 @@ class Gauss {
           }
         }
       }
+
       if (ver == coluna - 1 || pivo == 0) {
         console.table(matriz2);
         switch (codigoErro) {
@@ -185,7 +185,6 @@ class Gauss {
     this.imprima(matriz2);
     return matriz2;
   }
-
   trocaLinhas(matriz, posPivo) {
     // Esse metodo troca a atual linha do pivo pela de baixo, caso a
     let linha = matriz.length;
@@ -275,7 +274,6 @@ class Gauss {
       );
     }
   }
-
   determinante(matrizinicial) {
     let linha = matrizinicial.length;
     let recebeObjeto;
@@ -305,13 +303,12 @@ class Gauss {
     somatorio = somatorio.toFixed(1);
     console.log("\n\nDeterminante = ", somatorio, "\n"); //[1][1] vai virar [ordem][ordem]
   }
-
   inversa(matrizinicial) {
     let i, j;
     let linha = matrizinicial.length;
     let coluna = matrizinicial[0].length;
     console.log(
-      "\n\nfor inverter uma matriz, vamos utilizar AGJ e uma matriz identidade"
+      "\n\nPara inverter uma matriz, vamos utilizar AGJ e uma matriz identidade"
     );
     console.log("\n\nMatriz completa\n\n");
     let matrizImprima = this.criarMatriz(linha, coluna);
@@ -360,7 +357,6 @@ class Gauss {
     }
     this.imprima(matrizImprima);
   }
-
   normaliza(matriz) {
     let i, j;
     let linha = matriz.length;
@@ -400,6 +396,5 @@ class Gauss {
     console.table(novaMatriz);
   }
 }
-
 const Elimina = new Gauss();
 Elimina.menu();
